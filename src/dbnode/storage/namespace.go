@@ -1020,6 +1020,7 @@ func (n *dbNamespace) ColdFlush(
 		return err
 	}
 	resources := coldFlushReuseableResources{
+		// TODO(juchan): consider setting these options.
 		dirtySeries:        newDirtySeriesMap(dirtySeriesMapOptions{}),
 		dirtySeriesToWrite: make(map[xtime.UnixNano]*idList),
 		// TODO(juchan): set pool options.
