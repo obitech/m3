@@ -76,7 +76,7 @@ func TestBootstrapGaugeEmitterNoopScope(t *testing.T) {
 			bge := NewStringListEmitter(scope, "bootstrappers")
 			require.NotNil(t, bge)
 			require.NotNil(t, bge.gauges)
-			require.Equal(t, 1, len(bge.gauges))
+			require.Equal(t, 0, len(bge.gauges))
 
 			g := bge.newGauges(scope, bs)
 			require.NotNil(t, g)
@@ -87,7 +87,7 @@ func TestBootstrapGaugeEmitterNoopScope(t *testing.T) {
 			err := bge.UpdateStringList(bs)
 			require.Error(t, err)
 			require.NotNil(t, bge.gauges)
-			require.Equal(t, 1, len(bge.gauges))
+			require.Equal(t, 0, len(bge.gauges))
 
 			err = bge.Close()
 			require.Error(t, err)
@@ -113,17 +113,17 @@ func TestBootstrapGaugeEmitterNoopScope(t *testing.T) {
 		bge := NewStringListEmitter(scope, "bootstrappers")
 		require.NotNil(t, bge)
 		require.NotNil(t, bge.gauges)
-		require.Equal(t, len(bge.gauges), 1)
+		require.Equal(t, 0, len(bge.gauges))
 
 		// Start
 		err := bge.Start(bs0)
 		require.NoError(t, err)
 		require.True(t, bge.running)
 		require.NotNil(t, bge.gauges)
-		require.Equal(t, len(bge.gauges), len(bs0))
+		require.Equal(t, len(bs0), len(bge.gauges))
 
 		gauges := scope.Snapshot().Gauges()
-		require.Equal(t, len(bs0), len(gauges), "length of gauges after start")
+		require.Equal(t, len(gauges), len(bs0), "length of gauges after start")
 
 		for _, id := range []string{
 			fmt.Sprintf("testScope.bootstrappers_0+type=%s", bs0[0]),
@@ -142,7 +142,7 @@ func TestBootstrapGaugeEmitterNoopScope(t *testing.T) {
 		require.NoError(t, err)
 		require.True(t, bge.running, "state of bootstrapGaugeEmitter after update")
 		require.NotNil(t, bge.gauges)
-		require.Equal(t, len(bge.gauges), len(bs1))
+		require.Equal(t, len(bs1), len(bge.gauges))
 
 		gauges = scope.Snapshot().Gauges()
 		require.Equal(t, 8, len(gauges), "length of gauges after updating")
@@ -170,7 +170,7 @@ func TestBootstrapGaugeEmitterNoopScope(t *testing.T) {
 		require.NoError(t, err)
 		require.True(t, bge.running, "state of bootstrapGaugeEmitter after update")
 		require.NotNil(t, bge.gauges)
-		require.Equal(t, len(bge.gauges), len(bs0))
+		require.Equal(t, len(bs0), len(bge.gauges))
 
 		gauges = scope.Snapshot().Gauges()
 		require.Equal(t, 8, len(gauges), "length of gauges after updating")
@@ -198,7 +198,7 @@ func TestBootstrapGaugeEmitterNoopScope(t *testing.T) {
 		require.NoError(t, err)
 		require.True(t, bge.running, "state of bootstrapGaugeEmitter after update")
 		require.NotNil(t, bge.gauges)
-		require.Equal(t, len(bge.gauges), len(bs0))
+		require.Equal(t, len(bs0), len(bge.gauges))
 
 		gauges = scope.Snapshot().Gauges()
 		require.Equal(t, 8, len(gauges), "length of gauges after updating")
@@ -231,11 +231,13 @@ func TestBootstrapGaugeEmitterNoopScope(t *testing.T) {
 		bge := NewStringListEmitter(scope, "bootstrappers")
 		require.NotNil(t, bge)
 		require.NotNil(t, bge.gauges)
+		require.Equal(t, 0, len(bge.gauges))
 
 		err := bge.Start(bootstrappers[0])
 		require.NoError(t, err)
 		require.True(t, bge.running)
 		require.NotNil(t, bge.gauges)
+		require.Equal(t, len(bootstrappers[0]), len(bge.gauges))
 
 		// Update same Gauge with standard bootstrappers
 		for _, bs := range bootstrappers {
@@ -243,6 +245,7 @@ func TestBootstrapGaugeEmitterNoopScope(t *testing.T) {
 			require.NoError(t, err)
 			require.True(t, bge.running)
 			require.NotNil(t, bge.gauges)
+			require.Equal(t, len(bs), len(bge.gauges))
 		}
 
 		err = bge.Close()
@@ -264,17 +267,20 @@ func TestStringListEmitterPrometheusScope(t *testing.T) {
 	bge := NewStringListEmitter(scope, "bootstrappers")
 	require.NotNil(t, bge)
 	require.NotNil(t, bge.gauges)
+	require.Equal(t, 0, len(bge.gauges))
 
 	err := bge.Start(bootstrappers[0])
 	require.NoError(t, err)
 	require.True(t, bge.running)
 	require.NotNil(t, bge.gauges)
+	require.Equal(t, len(bootstrappers[0]), len(bge.gauges))
 
 	for _, bs := range bootstrappers {
 		err = bge.UpdateStringList(bs)
 		require.NoError(t, err)
 		require.True(t, bge.running)
 		require.NotNil(t, bge.gauges)
+		require.Equal(t, len(bs), len(bge.gauges))
 	}
 
 	err = bge.Close()

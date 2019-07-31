@@ -53,7 +53,7 @@ type StringListEmitter struct {
 
 // NewStringListEmitter returns a StringListEmitter.
 func NewStringListEmitter(scope tally.Scope, name string) *StringListEmitter {
-	gauge := []tally.Gauge{tally.NoopScope.Gauge("blackhole")}
+	gauge := []tally.Gauge{}
 	return &StringListEmitter{
 		running: false,
 		doneCh:  make(chan bool, 1),
